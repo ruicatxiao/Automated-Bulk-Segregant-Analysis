@@ -156,7 +156,37 @@ def trim_reads(df, output_dir, threads, pbar):
 
 
 def index_reference(ref_genome, output_dir, pbar):
+    """
+    Indexes the reference genome by running:
+    1. bwa index
+    2. samtools faidx
+    3. gatk CreateSequenceDictionary
+
+    Now includes a safeguard to remove old index files for this reference
+    to avoid errors if they already exist.
+    """
     logging.info(f"Indexing reference genome: {ref_genome}")
+
+    # 1) Remove any existing index files for this reference
+    # Typical index files: *.fai, *.sa, *.amb, *.ann, *.pac, *.bwt
+    # GATK dict file typically ends in .dict (with the base name of the ref genome)
+    files_to_delete = [
+        f"{ref_genome}.fai",
+        f"{ref_genome}.sa",
+        f"{ref_genome}.amb",
+        f"{ref_genome}.ann",
+        f"{ref_genome}.pac",
+        f"{ref_genome}.bwt",
+        str(ref_genome.with_suffix('')) + ".dict"  # e.g. genome.fasta -> genome.dict
+    ]
+
+    for fpath in files_to_delete:
+        f = Path(fpath)
+        if f.exists():
+            logging.info(f"Removing old index file: {f}")
+            f.unlink()
+
+    # 2) Perform indexing
     # bwa index
     run_command(["bwa", "index", str(ref_genome)], pbar=pbar)
     # samtools faidx
