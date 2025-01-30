@@ -435,12 +435,15 @@ def select_biallelic_variants(ref_genome, output_dir, pbar):
         pbar.update(1)
 
 
+
 def plot_snp_distribution(output_dir, ref_genome, pbar):
     logging.info("Plotting SNP distribution with scatter_plot_snp_location.py")
     vcf_file = output_dir / 'work_vcf' / 'p.SNP.valid.vcf'
     fai_file = Path(ref_genome).with_suffix('.fasta.fai')
-    # Update the path to the custom script in the bin folder
-    script_path = Path.cwd() / 'bin' / 'scatter_plot_snp_location.py'
+
+    # Build script path next to this Python file
+    script_path = Path(__file__).parent / 'scatter_plot_snp_location.py'
+    
     command = [
         "python3", str(script_path),
         str(vcf_file),
@@ -557,11 +560,14 @@ def variants_to_table(ref_genome, output_dir, pbar):
         pbar.update(1)
 
 
+
 def run_post_processing(output_dir, pbar):
     logging.info("Running post-processing with BSA_R_Preprocessing.R")
     table_file = output_dir / 'tables' / 'FINAL_SNP_filtered.tsv'
-    # Update the path to the custom R script in the bin folder
-    script_path = Path.cwd() / 'bin' / 'BSA_R_Preprocessing.R'
+
+    # Build script path next to this Python file
+    script_path = Path(__file__).parent / 'BSA_R_Preprocessing.R'
+    
     command = [
         "Rscript",
         str(script_path),

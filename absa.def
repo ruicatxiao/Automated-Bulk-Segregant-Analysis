@@ -1,0 +1,90 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%labels
+    Author "Rui Xiao"
+    Version "0.1"
+    Description "Singularity def file for Automated BSA pipeline"
+
+%help
+    This container includes:
+     - Python 3 (system default in Ubuntu 24.04)
+     - BWA, SAMtools, Trim Galore, vcffilter, cutadapt, FastQC, R
+     - GATK 4.6.1.0
+     - R packages (ggplot2, readr)
+     - Additional Python packages (pandas, pyfiglet, colorama, tqdm)
+    The custom scripts (scatter_plot_snp_location.py, BSA_R_Preprocessing.R) 
+    are in the same directory as AutomatedBSA.py, all copied to /opt/ABSA.
+
+%files
+    AutomatedBSA.py                /opt/ABSA/AutomatedBSA.py
+    scatter_plot_snp_location.py   /opt/ABSA/scatter_plot_snp_location.py
+    BSA_R_Preprocessing.R          /opt/ABSA/BSA_R_Preprocessing.R
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    echo "1) Update & install base dependencies..."
+    apt-get update && apt-get upgrade -y --no-install-recommends
+    apt-get install -y --no-install-recommends \
+        wget \
+        unzip \
+        software-properties-common \
+        apt-transport-https \
+        ca-certificates \
+        gnupg \
+        curl \
+        build-essential
+
+    echo "2) Install needed apt packages..."
+    apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        r-base \
+        trim-galore \
+        bwa \
+        samtools \
+        libvcflib-tools \
+        libvcflib-dev \
+        fastqc \
+        openjdk-8-jdk \
+        || (echo "Trying openjdk-11" && apt-get install -y --no-install-recommends openjdk-11-jdk)
+
+    echo "3) Install Python dependencies with --break-system-packages..."
+    # Avoid upgrading pip to prevent apt-managed pip uninstall errors
+    python3 -m pip install --break-system-packages cutadapt pandas pyfiglet colorama tqdm matplotlib
+
+    echo "4) Ensure 'python' -> 'python3' for GATK wrapper"
+    ln -s /usr/bin/python3 /usr/bin/python || true
+
+    echo "5) Install GATK 4.6.1.0..."
+    mkdir -p /opt/gatk
+    cd /opt/gatk
+    wget https://github.com/broadinstitute/gatk/releases/download/4.6.1.0/gatk-4.6.1.0.zip
+    unzip gatk-4.6.1.0.zip
+    rm gatk-4.6.1.0.zip
+    ln -s /opt/gatk/gatk-4.6.1.0/gatk /usr/local/bin/gatk
+
+    echo "6) Install R packages ggplot2 and readr..."
+    Rscript -e 'install.packages(c("ggplot2","readr"), repos="https://cran.rstudio.com/")'
+
+    echo "7) Make scripts in /opt/ABSA executable..."
+    chmod +x /opt/ABSA/*.py || true
+    chmod +x /opt/ABSA/*.R || true
+
+    echo "8) Cleanup apt caches only..."
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+    export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+    export PATH="$JAVA_HOME/bin:$PATH"
+    export PATH="/opt/gatk/gatk-4.6.1.0:$PATH"
+    export PATH="/usr/bin:$PATH"
+    # If you want to directly run scatter_plot_snp_location.py by name, add /opt/ABSA to PATH:
+    export PATH="/opt/ABSA:$PATH"
+
+%runscript
+    echo "AutomatedBSA Container"
+    echo "Usage example:"
+    echo "  singularity exec --bind /host/data:/work absa.sif \\"
+    echo "    python3 /opt/ABSA/AutomatedBSA.py --ref /work/genome.fasta --sample /work/samplesheet.csv --threads 8"

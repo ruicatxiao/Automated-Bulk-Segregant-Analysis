@@ -7,6 +7,8 @@
 
 Automated Bulk Segregant Analysis (ABSA) is a pipeline designed to streamline the Bulk Segregant Analysis (BSA) workflow for Cryptosporidium crossings genomic data. It automates a series of bioinformatics tools and processes, enhancing efficiency, reproducibility, and scalability. This pipeline is a streamlined implementation of Dr. Xue Li's BSA analysis. Bulk segregant analysis is a technique for identifying the genetic loci that underlie phenotypic trait differences. The basic approach is to compare two pools of individuals from the opposing tails of the phenotypic distribution, sampled from an interbred population. This pipeline takes input all the way to allele freq table generation and plotting for all valid SNPs.
 
+Version update Jan-30-2025: now added singularity installation instructions, which takes care of all depdendency issues by constructing singulatity image. 
+
 ## Features
 
 - **Read Trimming**: Utilizes Trim Galore for trimming sequencing reads.
@@ -18,9 +20,12 @@ Automated Bulk Segregant Analysis (ABSA) is a pipeline designed to streamline th
 - **Organized Outputs**: Automatically organizes output tasble and plot files into designated folders (`tables` and `plots`).
 - **Comprehensive Logging**: Logs detailed workflow progress and errors to both the console and a log file (`AutomatedBSA.log`).
 
-## Requirements
+## Installations and Requirements
 
-### System Dependencies
+### Manual Installation
+Good for fine tuning specific parameters inside the AutomatedBSA.py
+
+#### System Dependencies
 
 Ensure the following bioinformatics tools are installed and accessible in your system's `$PATH`:
 
@@ -32,23 +37,49 @@ Ensure the following bioinformatics tools are installed and accessible in your s
 - [**R**](https://www.r-project.org/)
 - **Python 3.10.11**: The pipeline has been tested with Python version 3.10.11.
 
-### Python Dependency
+#### Python Dependency
 
-pandas pyfiglet colorama tqdm
+pandas pyfiglet colorama tqdm matplotlib
 
-### R Dependency
+#### R Dependency
 
 ggplot2 readr
 
-## Installation
+#### Manual Installation Steps
 
 - git clone https://github.com/ruicatxiao/Automated_Bulk_Segregant_Analysis.git
 
+- cd Automated_Bulk_Segregant_Analysis/
+
 - chmod u+x AutomatedBSA.py
 
-- chmod u+x bin/scatter_plot_snp_location.py
+- chmod u+x scatter_plot_snp_location.py
 
-- chmod u+x bin/BSA_R_Preprocessing.R
+- chmod u+x BSA_R_Preprocessing.R
+
+### Singularity Installation
+Good for rapid deployment in new systems
+
+#### System Dependencies
+Make sure singularity (>=v3.0.0) is installed on your system and in your $PATH
+
+- [**Singularity**](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
+
+#### Automatic Installation Steps
+
+- git clone https://github.com/ruicatxiao/Automated_Bulk_Segregant_Analysis.git
+
+- cd Automated_Bulk_Segregant_Analysis/
+
+- chmod u+x AutomatedBSA.py
+
+- chmod u+x scatter_plot_snp_location.py
+
+- chmod u+x BSA_R_Preprocessing.R
+
+- sudo singularity build absa.sif absa.def
+
+
 
 ## Prepare data
 Follow the provided samplesheet.csv file in the repo and place read files into raw_reads folder, update samplesheet.csv to reflect changes. You do not need to provide absolute path to read files
@@ -56,24 +87,47 @@ Follow the provided samplesheet.csv file in the repo and place read files into r
 You should have a reference genome in fasta, a samplesheet.csv and the raw_reads folder containing all reads
 
 ## Usage
+- T2TCpBGF genome is provided by default. replace this with any other Cryptosporidum genome as needed
 
+### Manual Installation Execution
 python3 AutomatedBSA.py \
 --ref <GENOME_REFERENCE.fasta> \
 --sample samplesheet.csv \
 --threads <NUMBER_OF_CPU_THREADS>
 
-- CpBGF genome is provided by default. replace this with any other Cryptosporidum genome as needed
+### Singularity Image Execution
+singularity exec \
+    --bind <INPUT_OUTPUT_FOLDER>:/input \
+    absa.sif \
+    /bin/bash -c "cd /input && python3 /opt/ABSA/AutomatedBSA.py \
+      --ref <GENOME_REFERENCE.fasta> \
+      --sample samplesheet.csv \
+      --threads <NUMBER_OF_CPU_THREADS>"
+
+### Singularity Image Execution in the background
+nohup singularity exec \
+    --bind <INPUT_OUTPUT_FOLDER>:/input \
+    absa.sif \
+    /bin/bash -c "cd /input && python3 /opt/ABSA/AutomatedBSA.py \
+      --ref <GENOME_REFERENCE.fasta> \
+      --sample samplesheet.csv \
+      --threads <NUMBER_OF_CPU_THREADS>" \
+> /dev/null 2>&1 &
 
 
-## Output
+## Output Structure
 All final output tables are located in "tables" folder. All generated plots file are located in "plots" folder
+
+├── plots/              # Final visualizations
+├── tables/             # Processed data tables
+├── sam_bam/            # Alignment files
+├── raw_vcf/            # Initial variant calls
+├── work_vcf/           # Filtered variants
+└── AutomatedBSA.log    # Process log
 
 
 ## In Development
-- Outlier SNPs removal via median absolute deviation (MAD)
-- TriCube smoothing of SNP frequency distribution
-- QTLSeqR processing, g-prime calculation and plotting
-- nf-core adaptation to remove local dependency requirements
+- Adding more functions to R post-processing scripts
 
 ## Credits
 
