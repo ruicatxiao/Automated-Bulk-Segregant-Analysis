@@ -1,7 +1,7 @@
 # Automated Bulk Segregant Analysis (ABSA)
 
 ![BSA drawio](https://github.com/user-attachments/assets/ab752971-1ee2-4b3a-97b3-65fa1bbb4173)
-![Singularity Logo](https://docs.sylabs.io/guides/latest/user-guide/_static/logo.png)
+<img src="https://docs.sylabs.io/guides/latest/user-guide/_static/logo.png" alt="Singularity Logo" width="100"/>
 
 ## Description
 
@@ -72,16 +72,21 @@ pandas pyfiglet colorama tqdm matplotlib
 ggplot2 readr
 
 #### Manual Installation Steps
-
-- git clone https://github.com/ruicatxiao/Automated_Bulk_Segregant_Analysis.git
-
-- cd Automated_Bulk_Segregant_Analysis/
-
-- chmod u+x AutomatedBSA.py
-
-- chmod u+x scatter_plot_snp_location.py
-
-- chmod u+x BSA_R_Preprocessing.R
+```bash
+git clone https://github.com/ruicatxiao/Automated_Bulk_Segregant_Analysis.git
+```
+```bash
+cd Automated_Bulk_Segregant_Analysis/
+```
+```bash
+chmod u+x AutomatedBSA.py
+```
+```bash
+chmod u+x scatter_plot_snp_location.py
+```
+```bash
+chmod u+x BSA_R_Preprocessing.R
+```
 
 ### Singularity Installation
 Good for rapid deployment in new systems
@@ -92,20 +97,39 @@ Make sure singularity (>=v3.0.0) is installed on your system and in your $PATH
 - [**Singularity**](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
 
 #### Automatic Installation Steps
+```bash
+git clone https://github.com/ruicatxiao/Automated_Bulk_Segregant_Analysis.git
+```
+```bash
+cd Automated_Bulk_Segregant_Analysis/
+```
+```bash
+chmod u+x AutomatedBSA.py
+```
+```bash
+chmod u+x scatter_plot_snp_location.py
+```
+```bash
+chmod u+x BSA_R_Preprocessing.R
+```
+```bash
+sudo singularity build absa.sif absa.def
+```
 
-- git clone https://github.com/ruicatxiao/Automated_Bulk_Segregant_Analysis.git
+ - (OPTIONAL) Consider adding your singularity image absa.sif to $PATH so it can be executed from everywhere
 
-- cd Automated_Bulk_Segregant_Analysis/
-
-- chmod u+x AutomatedBSA.py
-
-- chmod u+x scatter_plot_snp_location.py
-
-- chmod u+x BSA_R_Preprocessing.R
-
-- sudo singularity build absa.sif absa.def
-
-
+```bash
+mkdir -p ~/singularity/images/
+```
+```bash
+mv absa.sif ~/singularity/images/
+```
+```bash
+echo 'export PATH="$PATH:$HOME/singularity/images/"' >> ~/.bashrc
+```
+```bash
+source ~/.bashrc
+```
 
 ## Prepare data
 Follow the provided samplesheet.csv file in the repo and place read files into raw_reads folder, update samplesheet.csv to reflect changes. You do not need to provide absolute path to read files
