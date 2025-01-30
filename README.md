@@ -1,13 +1,39 @@
 # Automated Bulk Segregant Analysis (ABSA)
 
 ![BSA drawio](https://github.com/user-attachments/assets/ab752971-1ee2-4b3a-97b3-65fa1bbb4173)
-
+![Singularity Logo](https://docs.sylabs.io/guides/latest/user-guide/_static/logo.png)
 
 ## Description
 
 Automated Bulk Segregant Analysis (ABSA) is a pipeline designed to streamline the Bulk Segregant Analysis (BSA) workflow for Cryptosporidium crossings genomic data. It automates a series of bioinformatics tools and processes, enhancing efficiency, reproducibility, and scalability. This pipeline is a streamlined implementation of Dr. Xue Li's BSA analysis. Bulk segregant analysis is a technique for identifying the genetic loci that underlie phenotypic trait differences. The basic approach is to compare two pools of individuals from the opposing tails of the phenotypic distribution, sampled from an interbred population. This pipeline takes input all the way to allele freq table generation and plotting for all valid SNPs.
 
 Version update Jan-30-2025: now added singularity installation instructions, which takes care of all depdendency issues by constructing singulatity image. 
+
+```text
+    ___   __  ____________  __  ______  ________________ 
+   /   | / / / /_  __/ __ \/  |/  /   |/_  __/ ____/ __ \
+  / /| |/ / / / / / / / / / /|_/ / /| | / / / __/ / / / /
+ / ___ / /_/ / / / / /_/ / /  / / ___ |/ / / /___/ /_/ / 
+/_/  |_\____/ /_/  \____/_/  /_/_/  |_/_/ /_____/_____/  
+                                                         
+    ____  __  ____    __ __
+   / __ )/ / / / /   / //_/
+  / __  / / / / /   / ,<   
+ / /_/ / /_/ / /___/ /| |  
+/_____/\____/_____/_/ |_|  
+                           
+   _____ ________________  _______________    _   ________
+  / ___// ____/ ____/ __ \/ ____/ ____/   |  / | / /_  __/
+  \__ \/ __/ / / __/ /_/ / __/ / / __/ /| | /  |/ / / /   
+ ___/ / /___/ /_/ / _, _/ /___/ /_/ / ___ |/ /|  / / /    
+/____/_____/\____/_/ |_/_____/\____/_/  |_/_/ |_/ /_/     
+                                                          
+    ___    _   _____    ____  _______ _________
+   /   |  / | / /   |  / /\ \/ / ___//  _/ ___/
+  / /| | /  |/ / /| | / /  \  /\__ \ / / \__ \ 
+ / ___ |/ /|  / ___ |/ /___/ /___/ // / ___/ / 
+/_/  |_/_/ |_/_/  |_/_____/_//____/___//____/  
+```
 
 ## Features
 
@@ -90,40 +116,47 @@ You should have a reference genome in fasta, a samplesheet.csv and the raw_reads
 - T2TCpBGF genome is provided by default. replace this with any other Cryptosporidum genome as needed
 
 ### Manual Installation Execution
+```bash
 python3 AutomatedBSA.py \
 --ref <GENOME_REFERENCE.fasta> \
 --sample samplesheet.csv \
 --threads <NUMBER_OF_CPU_THREADS>
+```
 
 ### Singularity Image Execution
+```bash
 singularity exec \
-    --bind <INPUT_OUTPUT_FOLDER>:/input \
-    absa.sif \
+    --bind <INPUT_OUTPUT_FOLDER>:/input \       # Mount host directory to container
+    absa.sif \                                  # Singularity image
     /bin/bash -c "cd /input && python3 /opt/ABSA/AutomatedBSA.py \
       --ref <GENOME_REFERENCE.fasta> \
       --sample samplesheet.csv \
       --threads <NUMBER_OF_CPU_THREADS>"
+```
 
 ### Singularity Image Execution in the background
+```bash
 nohup singularity exec \
-    --bind <INPUT_OUTPUT_FOLDER>:/input \
-    absa.sif \
+    --bind <INPUT_OUTPUT_FOLDER>:/input \        # Mount host directory to container
+    absa.sif \                                   # Singularity image
     /bin/bash -c "cd /input && python3 /opt/ABSA/AutomatedBSA.py \
       --ref <GENOME_REFERENCE.fasta> \
       --sample samplesheet.csv \
-      --threads <NUMBER_OF_CPU_THREADS>" \
-> /dev/null 2>&1 &
+      --threads <NUMBER_OF_CPU_THREADS>" > /dev/null 2>&1 &       # Redirect output and run in background
+```
 
 
 ## Output Structure
 All final output tables are located in "tables" folder. All generated plots file are located in "plots" folder
 
+```text
 ├── plots/              # Final visualizations
 ├── tables/             # Processed data tables
 ├── sam_bam/            # Alignment files
 ├── raw_vcf/            # Initial variant calls
 ├── work_vcf/           # Filtered variants
 └── AutomatedBSA.log    # Process log
+```
 
 
 ## In Development
