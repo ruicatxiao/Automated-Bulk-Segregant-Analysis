@@ -1,7 +1,6 @@
 # Automated Bulk Segregant Analysis (ABSA)
 
-![BSA drawio](https://github.com/user-attachments/assets/ab752971-1ee2-4b3a-97b3-65fa1bbb4173)
-<img src="https://docs.sylabs.io/guides/latest/user-guide/_static/logo.png" alt="Singularity Logo" width="100"/>
+![Image](https://github.com/user-attachments/assets/c325993e-e1d5-4858-a4e0-4ca8eaf51550)
 
 ## Description
 
@@ -131,11 +130,6 @@ echo 'export PATH="$PATH:$HOME/singularity/images/"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-## Prepare data
-Follow the provided samplesheet.csv file in the repo and place read files into raw_reads folder, update samplesheet.csv to reflect changes. You do not need to provide absolute path to read files
-
-You should have a reference genome in fasta, a samplesheet.csv and the raw_reads folder containing all reads
-
 ## Usage
 - T2TCpBGF genome is provided by default. replace this with any other Cryptosporidum genome as needed
 
@@ -168,6 +162,56 @@ nohup singularity exec \
       --sample samplesheet.csv \
       --threads <NUMBER_OF_CPU_THREADS>" > /dev/null 2>&1 &       # Redirect output and run in background
 ```
+
+
+## Input Structure
+Follow the provided samplesheet.csv file in the repo and place read files into raw_reads folder, update samplesheet.csv to reflect changes. You do not need to provide absolute path to read files
+
+You should have a reference genome in fasta, a samplesheet.csv and the raw_reads folder containing all reads
+
+- Manual Installation Required Input Folder Structure
+
+```text
+Automated_Bulk_Segregant_Analysis/
+├── AutomatedBSA.py                         # Main workflow script
+├── scatter_plot_snp_location.py            # Plotting script
+├── BSA_R_Preprocessing.R                   # R Preprocessing script
+├── samplesheet.csv                         # Sample sheet
+├── refgenome.fasta                         # Reference genome
+└── raw_reads/                              # Folder with raw reads
+    ├── p1_read1.fastq.gz
+    ├── p1_read2.fastq.gz
+    ├── p2_read1.fastq.gz
+    ├── p2_read2.fastq.gz
+    ├── c1_read1.fastq.gz
+    ├── c1_read2.fastq.gz
+    ├── c2_read1.fastq.gz
+    ├── c2_read2.fastq.gz
+    ├── c3_read1.fastq.gz
+    ├── c3_read2.fastq.gz
+    └── ...
+```
+
+- Singularity Installation Required Input Folder Structure
+
+```text
+INPUT_OUTPUT_FOLDER/
+├── samplesheet.csv                         # Sample sheet
+├── refgenome.fasta                         # Reference genome
+└── raw_reads/                              # Folder with raw reads
+    ├── p1_read1.fastq.gz
+    ├── p1_read2.fastq.gz
+    ├── p2_read1.fastq.gz
+    ├── p2_read2.fastq.gz
+    ├── c1_read1.fastq.gz
+    ├── c1_read2.fastq.gz
+    ├── c2_read1.fastq.gz
+    ├── c2_read2.fastq.gz
+    ├── c3_read1.fastq.gz
+    ├── c3_read2.fastq.gz
+    └── ...
+```
+
 
 
 ## Output Structure
