@@ -95,6 +95,40 @@ Make sure singularity (>=v3.0.0) is installed on your system and in your $PATH
 
 - [**Singularity**](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
 
+```bash
+sudo apt-get install \
+   autoconf \
+   automake \
+   cryptsetup \
+   fuse \
+   fuse2fs \
+   git \
+   libfuse-dev \
+   libglib2.0-dev \
+   libseccomp-dev \
+   libtool \
+   pkg-config \
+   runc \
+   squashfs-tools \
+   squashfs-tools-ng \
+   uidmap \
+   wget \
+   zlib1g-dev
+```
+
+```bash
+wget https://github.com/sylabs/singularity/releases/download/v4.2.1/singularity-ce_4.2.1-jammy_amd64.deb
+```
+
+```bash
+sudo dpkg --install singularity-ce_4.2.1-jammy_amd64.deb
+
+sudo apt-get install -yf
+
+```
+
+
+
 #### Automatic Installation Steps
 ```bash
 git clone https://github.com/ruicatxiao/Automated_Bulk_Segregant_Analysis.git
