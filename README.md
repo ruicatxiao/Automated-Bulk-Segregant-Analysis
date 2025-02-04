@@ -268,7 +268,7 @@ All final output tables are located in "tables" folder. All generated plots file
 
 ABSA is conceptualized by Sebastian Shaw and Rui Xiao. The pipeline is developed and implemented by Rui Xiao.
 
-We thank Xue Li for implementing the original BSA, which ABSA is based upon
+Original BSA algorithm was developped by Xue Li.
 
 ## Citations
 
