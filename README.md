@@ -246,6 +246,22 @@ INPUT_OUTPUT_FOLDER/
     └── ...
 ```
 
+- samplesheet.csv structure
+Follow the format below to prepare your samplesheet.csv, as well as reads path
+```text
+
+sampleName,sampleType,read1,read2
+Parent_1_Name,parent_1,raw_reads/p1_read1.fastq.gz,raw_reads/p1_read2.fastq.gz
+Parent_2_Name,parent_2,raw_reads/p2_read1.fastq.gz,raw_reads/p2_read2.fastq.gz
+Crossing_Gen1,bulk,raw_reads/c1_read1.fastq.gz,raw_reads/c1_read2.fastq.gz
+Crossing_Gen2,bulk,raw_reads/c2_read1.fastq.gz,raw_reads/c2_read2.fastq.gz
+Crossing_Gen3,bulk,raw_reads/c3_read1.fastq.gz,raw_reads/c3_read2.fastq.gz
+Crossing_Gen4,bulk,raw_reads/c4_read1.fastq.gz,raw_reads/c4_read2.fastq.gz
+
+```
+
+- manuscript_scripts
+These are scripts used for generating the figures of the primary manuscript
 
 
 ## Output Structure
